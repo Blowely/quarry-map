@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Typography, Row, Col, Statistic, Card } from 'antd';
 import { EnvironmentOutlined, ShoppingOutlined } from '@ant-design/icons';
 import './App.css';
@@ -6,6 +6,7 @@ import './App.css';
 import QuarryMap from './components/QuarryMap';
 import QuarryInfo from './components/QuarryInfo';
 import QuarryFilters from './components/QuarryFilters';
+import TestPanel from './components/TestPanel';
 import { QuarryPoint } from './types/quarry';
 import { quarriesData } from './data/quarriesData';
 
@@ -17,6 +18,11 @@ function App() {
   const [filteredQuarries, setFilteredQuarries] = useState<QuarryPoint[]>([]);
   const [selectedQuarry, setSelectedQuarry] = useState<QuarryPoint | null>(null);
 
+  // Логируем изменения selectedQuarry
+  useEffect(() => {
+    console.log('App: selectedQuarry изменился на:', selectedQuarry);
+  }, [selectedQuarry]);
+
   useEffect(() => {
     // Используем демо данные
     setQuarries(quarriesData);
@@ -24,13 +30,17 @@ function App() {
   }, []);
 
   const handleQuarrySelect = (quarry: QuarryPoint) => {
+    console.log('App: Карьер выбран:', quarry.name);
+    console.log('App: Обновляем selectedQuarry на:', quarry);
     setSelectedQuarry(quarry);
   };
 
-  const handleFilterChange = (filtered: QuarryPoint[]) => {
+  const handleFilterChange = useCallback((filtered: QuarryPoint[]) => {
+    console.log('App: Фильтры изменились, количество карьеров:', filtered.length);
     setFilteredQuarries(filtered);
-    setSelectedQuarry(null);
-  };
+    // НЕ сбрасываем выбранный карьер при изменении фильтров
+    // setSelectedQuarry(null);
+  }, []);
 
   const totalMaterials = quarries.reduce((sum, quarry) => sum + quarry.materials.length, 0);
 
@@ -70,6 +80,11 @@ function App() {
       <Content style={{ padding: '24px' }}>
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={6}>
+            <TestPanel 
+              selectedQuarry={selectedQuarry}
+              onTestSelect={handleQuarrySelect}
+              quarries={quarries}
+            />
             <QuarryFilters 
               quarries={quarries} 
               onFilterChange={handleFilterChange} 

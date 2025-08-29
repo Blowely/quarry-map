@@ -9,13 +9,21 @@ interface QuarryInfoProps {
 }
 
 const QuarryInfo: React.FC<QuarryInfoProps> = ({ quarry }) => {
+  console.log('QuarryInfo: получен карьер:', quarry);
+  console.log('QuarryInfo: тип quarry:', typeof quarry);
+  console.log('QuarryInfo: quarry === null:', quarry === null);
+  
   if (!quarry) {
+    console.log('QuarryInfo: отображаем пустое состояние');
     return (
       <Card>
         <Text type="secondary">Выберите карьер на карте для просмотра информации</Text>
       </Card>
     );
   }
+
+  console.log('QuarryInfo: отображаем информацию для карьера:', quarry.name);
+  console.log('QuarryInfo: материалы:', quarry.materials);
 
   const materialColumns = [
     {

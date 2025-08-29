@@ -18,50 +18,79 @@ interface QuarryMapProps {
 const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarrySelect }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [placemarks, setPlacemarks] = useState<any[]>([]);
   const [error, setError] = useState<string>('');
 
+
+
   useEffect(() => {
+    console.log('QuarryMap: Инициализация карты');
+    console.log('QuarryMap: window.ymaps существует:', !!window.ymaps);
+    
     if (!window.ymaps) {
+      console.log('QuarryMap: Загружаем API Яндекс карт');
       const script = document.createElement('script');
       script.src = `https://api-maps.yandex.ru/${MAPS_CONFIG.YANDEX_VERSION}/?apikey=${MAPS_CONFIG.YANDEX_API_KEY}&lang=ru_RU`;
       script.async = true;
-      script.onload = initMap;
-      script.onerror = () => setError('Ошибка загрузки Яндекс карт');
+      script.onload = () => {
+        console.log('QuarryMap: API Яндекс карт загружен');
+        initMap();
+      };
+      script.onerror = () => {
+        console.error('QuarryMap: Ошибка загрузки API Яндекс карт');
+        setError('Ошибка загрузки Яндекс карт');
+      };
       document.head.appendChild(script);
     } else {
+      console.log('QuarryMap: API Яндекс карт уже загружен');
       initMap();
     }
   }, []);
 
   const initMap = () => {
-    if (!mapRef.current) return;
+    console.log('QuarryMap: initMap вызвана');
+    if (!mapRef.current) {
+      console.error('QuarryMap: mapRef.current не существует');
+      return;
+    }
 
     try {
+      console.log('QuarryMap: Вызываем ymaps.ready');
       window.ymaps.ready(() => {
+        console.log('QuarryMap: ymaps.ready выполнен');
         const newMap = new window.ymaps.Map(mapRef.current, {
           center: MAPS_CONFIG.DEFAULT_CENTER,
           zoom: MAPS_CONFIG.DEFAULT_ZOOM,
           controls: ['zoomControl', 'fullscreenControl']
         });
 
+        console.log('QuarryMap: Карта создана:', newMap);
         setMap(newMap);
         setError('');
       });
     } catch (err) {
+      console.error('QuarryMap: Ошибка в initMap:', err);
       setError('Ошибка инициализации карты');
     }
   };
 
   useEffect(() => {
-    if (!map || quarries.length === 0) return;
+    console.log('QuarryMap: useEffect для меток вызван');
+    console.log('QuarryMap: map существует:', !!map);
+    console.log('QuarryMap: количество карьеров:', quarries.length);
+    
+    if (!map || quarries.length === 0) {
+      console.log('QuarryMap: Выходим из useEffect - нет карты или карьеров');
+      return;
+    }
 
     try {
-      // Удаляем старые метки
-      placemarks.forEach(placemark => {
-        map.geoObjects.remove(placemark);
-      });
+      console.log('QuarryMap: Очищаем геообъекты на карте');
+      // Очищаем все геообъекты на карте
+      map.geoObjects.removeAll();
 
+      console.log('QuarryMap: Создаем метки для карьеров');
       const newPlacemarks = quarries.map(quarry => {
         const placemark = new window.ymaps.Placemark(
           quarry.coordinates,
@@ -81,19 +110,22 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
             `
           },
           {
-            preset: selectedQuarry?.id === quarry.id ? 'islands#redDotIcon' : 'islands#blueDotIcon',
-            iconColor: selectedQuarry?.id === quarry.id ? '#ff4d4f' : '#1890ff'
+            preset: 'islands#blueDotIcon',
+            iconColor: '#1890ff'
           }
         );
 
         placemark.events.add('click', () => {
+          console.log('Клик по метке карьера:', quarry.name);
           onQuarrySelect(quarry);
         });
 
+        console.log('QuarryMap: Добавляем метку на карту для карьера:', quarry.name);
         map.geoObjects.add(placemark);
         return placemark;
       });
 
+      console.log('QuarryMap: Метки созданы, обновляем состояние');
       setPlacemarks(newPlacemarks);
 
       // Добавляем глобальную функцию для вызова из балуна
@@ -103,10 +135,31 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
           onQuarrySelect(quarry);
         }
       };
+      
+      console.log('QuarryMap: useEffect для меток завершен');
     } catch (err) {
+      console.error('QuarryMap: Ошибка при создании меток:', err);
       setError('Ошибка отображения меток на карте');
     }
-  }, [map, quarries, selectedQuarry, placemarks, onQuarrySelect]);
+  }, [map, quarries, onQuarrySelect]);
+
+  // Отдельный useEffect для обновления внешнего вида выбранной метки
+  useEffect(() => {
+    if (!map || placemarks.length === 0) return;
+
+    console.log('QuarryMap: Обновляем внешний вид меток для selectedQuarry:', selectedQuarry?.name);
+    
+    placemarks.forEach((placemark, index) => {
+      const quarry = quarries[index];
+      if (quarry) {
+        const isSelected = selectedQuarry?.id === quarry.id;
+        placemark.options.set({
+          preset: isSelected ? 'islands#redDotIcon' : 'islands#blueDotIcon',
+          iconColor: isSelected ? '#ff4d4f' : '#1890ff'
+        });
+      }
+    });
+  }, [selectedQuarry, map, placemarks, quarries]);
 
   if (error) {
     return (
