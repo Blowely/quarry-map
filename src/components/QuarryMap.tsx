@@ -1,19 +1,97 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { QuarryPoint } from '../types/quarry';
 import { MAPS_CONFIG } from '../config/maps';
 import { trucks, deliveryPoints } from '../data/logisticsData';
+import MapLegend from './MapLegend';
+
 
 interface QuarryMapProps {
   quarries: QuarryPoint[];
   selectedQuarry: QuarryPoint | null;
   onQuarrySelect: (quarry: QuarryPoint) => void;
+  onTruckSelect?: (truck: any) => void;
+  onDeliverySelect?: (delivery: any) => void;
 }
 
-const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarrySelect }) => {
+const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarrySelect, onTruckSelect, onDeliverySelect }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
   const [placemarks, setPlacemarks] = useState<any[]>([]);
+  const [routeLine, setRouteLine] = useState<any>(null);
   const [error, setError] = useState<string>('');
+  const [apiLoaded, setApiLoaded] = useState(false);
+
+  // Функция для отрисовки маршрута
+  const drawRoute = useCallback((startCoords: [number, number], middleCoords: [number, number], endCoords: [number, number]) => {
+    if (!map) return;
+
+    // Удаляем предыдущий маршрут
+    if (routeLine) {
+      map.geoObjects.remove(routeLine);
+    }
+
+    try {
+      // Создаем маршрут через точки
+      const route = new (window as any).ymaps.GeoObject({
+        geometry: {
+          type: 'LineString',
+          coordinates: [startCoords, middleCoords, endCoords]
+        },
+        properties: {
+          hintContent: 'Маршрут доставки'
+        }
+      }, {
+        strokeColor: '#ff0000',
+        strokeWidth: 4,
+        strokeStyle: 'solid'
+      });
+
+      // Добавляем стрелки направления
+      const arrow = new (window as any).ymaps.GeoObject({
+        geometry: {
+          type: 'Point',
+          coordinates: middleCoords
+        },
+        properties: {
+          hintContent: 'Направление'
+        }
+      }, {
+        preset: 'islands#redArrowIcon'
+      });
+
+      // Группируем маршрут и стрелку
+      const routeGroup = new (window as any).ymaps.GeoObjectCollection();
+      routeGroup.add(route);
+      routeGroup.add(arrow);
+
+      map.geoObjects.add(routeGroup);
+      setRouteLine(routeGroup);
+
+      // Центрируем карту на маршруте
+      map.setBounds(routeGroup.geometry.getBounds(), { checkZoomRange: true });
+
+      console.log('Маршрут отрисован на карте');
+    } catch (err) {
+      console.error('Ошибка отрисовки маршрута:', err);
+    }
+  }, [map, routeLine]);
+
+  // Функция для сброса маршрута
+  const clearRoute = useCallback(() => {
+    if (map && routeLine) {
+      map.geoObjects.remove(routeLine);
+      setRouteLine(null);
+      console.log('Маршрут сброшен');
+    }
+  }, [map, routeLine]);
+
+  // Добавляем функции в глобальную область для вызова из калькулятора
+  useEffect(() => {
+    if (map) {
+      (window as any).drawRouteOnMap = drawRoute;
+      (window as any).clearRouteOnMap = clearRoute;
+    }
+  }, [map, drawRoute, clearRoute]);
 
   useEffect(() => {
     console.log('QuarryMap: useEffect для загрузки API вызван');
@@ -21,7 +99,7 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
     // Проверяем, загружен ли уже API
     if ((window as any).ymaps) {
       console.log('QuarryMap: API уже загружен');
-      initializeMap();
+      setApiLoaded(true);
       return;
     }
 
@@ -34,10 +112,7 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
     
     script.onload = () => {
       console.log('QuarryMap: API загружен успешно');
-      (window as any).ymaps.ready(() => {
-        console.log('QuarryMap: API готов к использованию');
-        initializeMap();
-      });
+      setApiLoaded(true);
     };
     
     script.onerror = () => {
@@ -48,28 +123,29 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
     document.head.appendChild(script);
   }, []);
 
-  const initializeMap = () => {
+  // useEffect для инициализации карты после загрузки API
+  useEffect(() => {
+    if (!apiLoaded || !mapRef.current) return;
+
     console.log('QuarryMap: Инициализируем карту');
     
-    if (!mapRef.current) {
-      console.error('QuarryMap: mapRef.current не существует');
-      return;
-    }
-
     try {
-      const newMap = new (window as any).ymaps.Map(mapRef.current, {
-        center: MAPS_CONFIG.DEFAULT_CENTER,
-        zoom: MAPS_CONFIG.DEFAULT_ZOOM,
-        controls: ['zoomControl', 'fullscreenControl']
-      });
+      (window as any).ymaps.ready(() => {
+        const newMap = new (window as any).ymaps.Map(mapRef.current, {
+          center: MAPS_CONFIG.DEFAULT_CENTER,
+          zoom: MAPS_CONFIG.DEFAULT_ZOOM,
+          controls: ['zoomControl', 'fullscreenControl']
+        });
 
-      console.log('QuarryMap: Карта создана');
-      setMap(newMap);
+        console.log('QuarryMap: Карта создана');
+        setMap(newMap);
+        setError('');
+      });
     } catch (err) {
       console.error('QuarryMap: Ошибка создания карты:', err);
       setError('Ошибка создания карты');
     }
-  };
+  }, [apiLoaded]);
 
   // useEffect для создания меток карьеров
   useEffect(() => {
@@ -86,10 +162,15 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
       console.log('QuarryMap: Очищаем геообъекты на карте');
       map.geoObjects.removeAll();
       
+      // Сбрасываем маршрут при обновлении меток
+      setRouteLine(null);
+      
       console.log('QuarryMap: Создаем метки для карьеров');
       const newPlacemarks: any[] = [];
       
       quarries.forEach(quarry => {
+        console.log('QuarryMap: Создаем метку для карьера:', quarry.name, 'координаты:', quarry.coordinates);
+        
         const placemark = new (window as any).ymaps.Placemark(
           quarry.coordinates,
           {
@@ -114,8 +195,10 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
             hintContent: quarry.name
           },
           {
-            preset: 'islands#blueDotIcon',
-            iconColor: selectedQuarry?.id === quarry.id ? '#f5222d' : '#1890ff'
+            iconLayout: 'default#image',
+            iconImageHref: selectedQuarry?.id === quarry.id ? '/icons/quarry-selected.svg' : '/icons/quarry.svg',
+            iconImageSize: [32, 32],
+            iconImageOffset: [-16, -16]
           }
         );
 
@@ -143,13 +226,25 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
                   <p><strong>Грузоподъемность:</strong> ${truck.capacity} т</p>
                   <p><strong>Расход топлива:</strong> ${truck.fuelConsumption} л/100км</p>
                   <p><strong>Статус:</strong> <span style="color: #52c41a;">Доступен</span></p>
+                  <button onclick="window.selectTruck('${truck.id}')" style="
+                    background: #fa8c16; 
+                    color: white; 
+                    border: none; 
+                    padding: 8px 16px; 
+                    border-radius: 4px; 
+                    cursor: pointer;
+                  ">
+                    Выбрать грузовик
+                  </button>
                 </div>
               `,
               hintContent: `${truck.name} (${truck.capacity} т)`
             },
             {
-              preset: 'islands#truckIcon',
-              iconColor: '#fa8c16'
+              iconLayout: 'default#image',
+              iconImageHref: '/icons/truck.svg',
+              iconImageSize: [36, 36],
+              iconImageOffset: [-18, -18]
             }
           );
           
@@ -179,15 +274,27 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
                       delivery.urgency === 'medium' ? 'Средняя' : 'Низкая'}
                   </span>
                 </p>
+                <button onclick="window.selectDelivery('${delivery.id}')" style="
+                  background: #f5222d; 
+                  color: white; 
+                  border: none; 
+                  padding: 8px 16px; 
+                  border-radius: 4px; 
+                  cursor: pointer;
+                ">
+                  Выбрать точку доставки
+                </button>
               </div>
             `,
             hintContent: `${delivery.name} (${delivery.material})`
           },
-          {
-            preset: 'islands#redDotIcon',
-            iconColor: delivery.urgency === 'high' ? '#f5222d' : 
-                       delivery.urgency === 'medium' ? '#fa8c16' : '#52c41a'
-          }
+                      {
+              iconLayout: 'default#image',
+              iconImageHref: delivery.urgency === 'high' ? '/icons/delivery-high.svg' : 
+                             delivery.urgency === 'medium' ? '/icons/delivery-medium.svg' : '/icons/delivery-low.svg',
+              iconImageSize: [32, 32],
+              iconImageOffset: [-16, -16]
+            }
         );
         
         map.geoObjects.add(deliveryPlacemark);
@@ -202,6 +309,22 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
         const quarry = quarries.find(q => q.id === id);
         if (quarry) {
           onQuarrySelect(quarry);
+        }
+      };
+
+      // Добавляем функцию для выбора грузовика из балуна
+      (window as any).selectTruck = (id: string) => {
+        const truck = trucks.find(t => t.id === id);
+        if (truck && onTruckSelect) {
+          onTruckSelect(truck);
+        }
+      };
+
+      // Добавляем функцию для выбора точки доставки из балуна
+      (window as any).selectDelivery = (id: string) => {
+        const delivery = deliveryPoints.find(d => d.id === id);
+        if (delivery && onDeliverySelect) {
+          onDeliverySelect(delivery);
         }
       };
 
@@ -245,16 +368,34 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
     );
   }
 
+  if (!apiLoaded) {
+    return (
+      <div style={{ 
+        padding: '20px', 
+        textAlign: 'center', 
+        color: '#1890ff',
+        background: '#f0f9ff',
+        border: '1px solid #91d5ff',
+        borderRadius: '8px'
+      }}>
+        <strong>Загрузка карты...</strong>
+      </div>
+    );
+  }
+
   return (
-    <div 
-      ref={mapRef} 
-      style={{ 
-        width: '100%', 
-        height: '600px',
-        borderRadius: '8px',
-        overflow: 'hidden'
-      }} 
-    />
+    <div style={{ position: 'relative', width: '100%', height: '600px' }}>
+      <div 
+        ref={mapRef} 
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          borderRadius: '8px',
+          overflow: 'hidden'
+        }} 
+      />
+      <MapLegend />
+    </div>
   );
 };
 

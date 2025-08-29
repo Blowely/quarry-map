@@ -1,0 +1,9 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="16" r="16" fill="#f5222d"/>
+  <!-- Ковш экскаватора -->
+  <path d="M6 18L10 14L18 14L22 18L20 22H8L6 18Z" fill="white"/>
+  <!-- Стрела экскаватора -->
+  <rect x="14" y="8" width="4" height="6" fill="white"/>
+  <!-- База экскаватора -->
+  <rect x="12" y="24" width="8" height="4" fill="white"/>
+</svg>

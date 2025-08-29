@@ -1,44 +1,29 @@
-import React from 'react';
-import { Card, Select, Input, Space, Typography } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Input, Select, Space } from 'antd';
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
 import { QuarryPoint } from '../types/quarry';
 
-const { Option } = Select;
 const { Search } = Input;
-const { Text } = Typography;
+const { Option } = Select;
 
 interface QuarryFiltersProps {
   quarries: QuarryPoint[];
-  onFilterChange: (filteredQuarries: QuarryPoint[]) => void;
+  onFilterChange: (filtered: QuarryPoint[]) => void;
 }
 
 const QuarryFilters: React.FC<QuarryFiltersProps> = ({ quarries, onFilterChange }) => {
-  const [searchText, setSearchText] = React.useState('');
-  const [selectedMaterial, setSelectedMaterial] = React.useState<string>('');
+  const [searchText, setSearchText] = useState('');
+  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
 
-  // Получаем уникальные материалы
-  const materials = React.useMemo(() => {
-    const materialSet = new Set<string>();
-    quarries.forEach(quarry => {
-      quarry.materials.forEach(material => {
-        if (material.name) {
-          materialSet.add(material.name);
-        }
-      });
-    });
-    return Array.from(materialSet).sort();
-  }, [quarries]);
-
-  React.useEffect(() => {
+  const filterQuarries = useCallback(() => {
     let filtered = quarries;
 
-    // Фильтр по поиску
-    if (searchText) {
+    // Фильтр по тексту поиска
+    if (searchText.trim()) {
       filtered = filtered.filter(quarry =>
         quarry.name.toLowerCase().includes(searchText.toLowerCase()) ||
         quarry.company.toLowerCase().includes(searchText.toLowerCase()) ||
-        quarry.materials.some(material => 
-          material.name.toLowerCase().includes(searchText.toLowerCase())
-        )
+        quarry.contact.includes(searchText)
       );
     }
 
@@ -52,37 +37,47 @@ const QuarryFilters: React.FC<QuarryFiltersProps> = ({ quarries, onFilterChange 
     onFilterChange(filtered);
   }, [searchText, selectedMaterial, quarries, onFilterChange]);
 
+  useEffect(() => {
+    // Применяем фильтры только если есть активные условия
+    if (searchText.trim() || selectedMaterial) {
+      filterQuarries();
+    } else {
+      // Если фильтры не заданы, показываем все карьеры
+      onFilterChange(quarries);
+    }
+  }, [searchText, selectedMaterial, quarries, filterQuarries, onFilterChange]);
+
+  // Получаем уникальные материалы для фильтра
+  const uniqueMaterials = Array.from(
+    new Set(quarries.flatMap(quarry => quarry.materials.map(m => m.name)))
+  ).sort();
+
   return (
-    <Card size="small">
-      <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        <div>
-          <Text strong>Поиск</Text>
-          <Search
-            placeholder="Поиск по названию, компании или материалу"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            allowClear
-          />
-        </div>
-        
-        <div>
-          <Text strong>Материал</Text>
-          <Select
-            placeholder="Выберите материал"
-            value={selectedMaterial}
-            onChange={setSelectedMaterial}
-            allowClear
-            style={{ width: '100%' }}
-          >
-            {materials.map(material => (
-              <Option key={material} value={material}>
-                {material}
-              </Option>
-            ))}
-          </Select>
-        </div>
-      </Space>
-    </Card>
+    <Space size="middle" style={{ width: '100%' }}>
+      <Search
+        placeholder="Поиск по названию, компании, контактам"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{ width: '280px' }}
+        size="middle"
+        prefix={<SearchOutlined />}
+      />
+      <Select
+        placeholder="Материал"
+        value={selectedMaterial}
+        onChange={setSelectedMaterial}
+        allowClear
+        style={{ width: '160px' }}
+        size="middle"
+        prefix={<FilterOutlined />}
+      >
+        {uniqueMaterials.map(material => (
+          <Option key={material} value={material}>
+            {material}
+          </Option>
+        ))}
+      </Select>
+    </Space>
   );
 };
 

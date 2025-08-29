@@ -113,8 +113,6 @@ const QuarryInfo: React.FC<QuarryInfoProps> = ({ quarry }) => {
           </Text>
         </div>
 
-        <Divider style={{ margin: '8px 0' }} />
-
         {/* Основная информация */}
         <Row gutter={[16, 16]}>
           <Col span={12}>

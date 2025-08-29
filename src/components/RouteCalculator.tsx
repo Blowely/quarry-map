@@ -28,14 +28,40 @@ const { Option } = Select;
 
 interface RouteCalculatorProps {
   selectedQuarry: QuarryPoint | null;
+  selectedTruckFromMap?: any;
+  selectedDeliveryFromMap?: any;
 }
 
-const RouteCalculator: React.FC<RouteCalculatorProps> = ({ selectedQuarry }) => {
+const RouteCalculator: React.FC<RouteCalculatorProps> = ({ 
+  selectedQuarry, 
+  selectedTruckFromMap, 
+  selectedDeliveryFromMap 
+}) => {
   const [selectedTruck, setSelectedTruck] = useState<string>('');
   const [selectedDelivery, setSelectedDelivery] = useState<string>('');
   const [calculatedRoute, setCalculatedRoute] = useState<Route | null>(null);
 
   const availableTrucks = trucks.filter(truck => truck.isAvailable);
+
+  // Автоматически заполняем выбранные значения с карты
+  useEffect(() => {
+    if (selectedTruckFromMap) {
+      setSelectedTruck(selectedTruckFromMap.id);
+    }
+  }, [selectedTruckFromMap]);
+
+  useEffect(() => {
+    if (selectedDeliveryFromMap) {
+      setSelectedDelivery(selectedDeliveryFromMap.id);
+    }
+  }, [selectedDeliveryFromMap]);
+
+  // Автоматически рассчитываем маршрут при выборе всех компонентов
+  useEffect(() => {
+    if (selectedQuarry && selectedTruck && selectedDelivery) {
+      calculateRoute();
+    }
+  }, [selectedQuarry, selectedTruck, selectedDelivery]);
 
   const calculateRoute = () => {
     if (!selectedQuarry || !selectedTruck || !selectedDelivery) return;
@@ -81,12 +107,34 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ selectedQuarry }) => 
     };
 
     setCalculatedRoute(route);
+
+    // Отрисовываем маршрут на карте
+    if ((window as any).drawRouteOnMap) {
+      try {
+        (window as any).drawRouteOnMap(
+          truck.coordinates,           // Начальная точка (грузовик)
+          selectedQuarry.coordinates,  // Средняя точка (карьер)
+          delivery.coordinates         // Конечная точка (клиент)
+        );
+      } catch (err) {
+        console.error('Ошибка отрисовки маршрута:', err);
+      }
+    }
   };
 
   const resetCalculation = () => {
     setSelectedTruck('');
     setSelectedDelivery('');
     setCalculatedRoute(null);
+    
+    // Сбрасываем маршрут на карте
+    if ((window as any).clearRouteOnMap) {
+      try {
+        (window as any).clearRouteOnMap();
+      } catch (err) {
+        console.error('Ошибка сброса маршрута:', err);
+      }
+    }
   };
 
   useEffect(() => {
@@ -104,7 +152,6 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ selectedQuarry }) => 
             <Text strong>Калькулятор маршрута</Text>
           </Space>
         }
-        style={{ marginTop: '16px' }}
       >
         <Text type="secondary">Выберите карьер для расчета маршрута</Text>
       </Card>
@@ -119,7 +166,6 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ selectedQuarry }) => 
           <Text strong>Калькулятор маршрута</Text>
         </Space>
       }
-      style={{ marginTop: '16px' }}
       extra={
         calculatedRoute && (
           <Button size="small" onClick={resetCalculation}>
@@ -199,14 +245,20 @@ const RouteCalculator: React.FC<RouteCalculatorProps> = ({ selectedQuarry }) => 
         {/* Результаты расчета */}
         {calculatedRoute && (
           <>
-            <Divider style={{ margin: '16px 0' }} />
+            <Divider style={{ margin: '0px 0' }} />
             
             <Alert
               message="Маршрут рассчитан!"
-              description={`${calculatedRoute.truck.name} → ${calculatedRoute.quarry.name} → ${calculatedRoute.deliveryPoint.name}`}
+              description={
+                <div style={{ fontSize: '12px', lineHeight: '1.4' }}>
+                  <strong>{calculatedRoute.truck.name}</strong> →{' '}
+                  <strong>{calculatedRoute.quarry.name}</strong> →{' '}
+                  <strong>{calculatedRoute.deliveryPoint.name}</strong>
+                </div>
+              }
               type="success"
               showIcon
-              style={{ marginBottom: '16px' }}
+
             />
 
             <Row gutter={[16, 16]}>

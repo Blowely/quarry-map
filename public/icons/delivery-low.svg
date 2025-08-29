@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="16" r="16" fill="#52c41a"/>
+  <!-- Крыша здания -->
+  <path d="M8 20L16 10L24 20H8Z" fill="white"/>
+  <!-- Стены здания -->
+  <rect x="10" y="20" width="12" height="8" fill="white"/>
+  <!-- Дверь -->
+  <rect x="14" y="22" width="4" height="6" fill="white"/>
+  <!-- Окна -->
+  <rect x="11" y="22" width="2" height="2" fill="white"/>
+  <rect x="19" y="22" width="2" height="2" fill="white"/>
+</svg>
