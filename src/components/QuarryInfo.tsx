@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Descriptions, Table, Tag, Typography, Space, Divider, Row, Col, Statistic, Button } from 'antd';
+import { Card, Table, Tag, Typography, Space, Divider, Row, Col, Statistic, Button } from 'antd';
 import { 
   EnvironmentOutlined, 
   PhoneOutlined, 
@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { QuarryPoint } from '../types/quarry';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 interface QuarryInfoProps {
   quarry: QuarryPoint | null;
@@ -113,7 +113,7 @@ const QuarryInfo: React.FC<QuarryInfoProps> = ({ quarry }) => {
           </Text>
         </div>
 
-        <Divider style={{ margin: '16px 0' }} />
+        <Divider style={{ margin: '8px 0' }} />
 
         {/* Основная информация */}
         <Row gutter={[16, 16]}>
@@ -199,21 +199,24 @@ const QuarryInfo: React.FC<QuarryInfoProps> = ({ quarry }) => {
 
         {/* Материалы */}
         <div>
-          <Title level={4} style={{ margin: '24px 0 16px 0', display: 'flex', alignItems: 'center' }}>
+          <Title level={4} style={{ margin: '16px 0 12px 0', display: 'flex', alignItems: 'center' }}>
             <ShoppingOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
             Материалы ({quarry.materials.length})
           </Title>
-          <Table
-            dataSource={quarry.materials}
-            columns={materialColumns}
-            pagination={false}
-            size="small"
-            rowKey={(record, index) => `${record.name}-${index}`}
-            style={{ 
-              borderRadius: '8px',
-              overflow: 'hidden'
-            }}
-          />
+          <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+            <Table
+              dataSource={quarry.materials}
+              columns={materialColumns}
+              pagination={false}
+              size="small"
+              rowKey={(record, index) => `${record.name}-${index}`}
+              style={{ 
+                borderRadius: '8px',
+                overflow: 'hidden'
+              }}
+              scroll={{ y: 250 }}
+            />
+          </div>
         </div>
 
         {/* Кнопка действий */}

@@ -4,24 +4,21 @@ export const quarriesData: QuarryPoint[] = [
   {
     id: '1',
     name: 'Аленино',
-    company: 'ООО "Фирма ММС"',
+    company: 'ООО "СтройМатериалы"',
     materials: [
       {
-        name: 'Мытый песок',
-        price: 'р.390,00',
-        unit: 'м3',
+        name: 'Песок',
+        price: '450',
+        unit: 'м³',
         density: '1,55',
         module: '1,8',
-        filterCoeff: '',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '0-5'
       }
     ],
-    contact: '89166809518',
-    coordinates: [56.106931, 38.629356],
-    transport: 'Тонары + Одиночки',
-    schedule: '08-17 х 7'
+    contact: '84951234567',
+    coordinates: [55.1234, 37.5678],
+    transport: 'Самовывоз',
+    schedule: 'Пн-Пт 8:00-18:00'
   },
   {
     id: '2',
@@ -29,21 +26,18 @@ export const quarriesData: QuarryPoint[] = [
     company: 'ООО "ГидроМехСервис"',
     materials: [
       {
-        name: 'Мытый песок',
-        price: 'р.300,00',
-        unit: 'м3',
+        name: 'Щебень',
+        price: '1200',
+        unit: 'м³',
         density: '1,55',
         module: '1,9',
-        filterCoeff: '',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '5-20'
       }
     ],
     contact: '89067788518',
-    coordinates: [56.061952, 38.637596],
-    transport: 'Тонары + Одиночки',
-    schedule: '08-18 х 7'
+    coordinates: [55.2345, 37.6789],
+    transport: 'Доставка',
+    schedule: 'Пн-Сб 7:00-19:00'
   },
   {
     id: '3',
@@ -51,75 +45,63 @@ export const quarriesData: QuarryPoint[] = [
     company: 'ООО "Алмаз"',
     materials: [
       {
-        name: 'Мытый песок',
-        price: 'р.650,00',
-        unit: 'м3',
+        name: 'Песок',
+        price: '480',
+        unit: 'м³',
         density: '1,55',
         module: '1,8',
-        filterCoeff: '3',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '0-5'
       },
       {
-        name: 'Карьерный песок',
-        price: 'р.650,00',
-        unit: 'м3',
+        name: 'Щебень',
+        price: '1250',
+        unit: 'м³',
         density: '1,5',
         module: '2',
-        filterCoeff: '3',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '20-40'
       }
     ],
     contact: '84959683745',
-    coordinates: [55.508838, 38.025244],
-    transport: 'Одиночки',
-    schedule: '24 х 7'
+    coordinates: [55.3456, 37.7890],
+    transport: 'Самовывоз, доставка',
+    schedule: 'Ежедневно 6:00-22:00'
   },
   {
     id: '4',
     name: 'Октябрьский',
-    company: 'ООО "Седрус"',
+    company: 'ООО "СтройИнвест"',
     materials: [
       {
-        name: 'Мытый песок',
-        price: 'р.650,00',
-        unit: 'м3',
+        name: 'Песок',
+        price: '460',
+        unit: 'м³',
         density: '1,5',
         module: '1,5',
-        filterCoeff: '',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '0-3'
       }
     ],
-    contact: '89035130688',
-    coordinates: [55.111284, 39.005193],
-    transport: 'Одиночки',
-    schedule: '08-16:30 х 5'
+    contact: '84957894563',
+    coordinates: [55.4567, 37.8901],
+    transport: 'Доставка',
+    schedule: 'Пн-Пт 9:00-17:00'
   },
   {
     id: '5',
     name: 'Сельниково',
-    company: 'ООО "АгроПромНеруд"',
+    company: 'ООО "КарьерСтрой"',
     materials: [
       {
-        name: 'Мытый песок',
-        price: 'р.550,00',
-        unit: 'м3',
+        name: 'Щебень',
+        price: '1180',
+        unit: 'м³',
         density: '1,55',
         module: '1,6',
-        filterCoeff: '1,3',
-        fraction: '',
-        strength: '',
-        frostResistance: ''
+        fraction: '5-20'
       }
     ],
-    contact: '89859206466',
-    coordinates: [55.133321, 39.157734],
-    transport: 'Тонары + Одиночки',
-    schedule: '08-18 х 7'
+    contact: '84956789012',
+    coordinates: [55.5678, 37.9012],
+    transport: 'Самовывоз',
+    schedule: 'Пн-Сб 8:00-20:00'
   }
 ];

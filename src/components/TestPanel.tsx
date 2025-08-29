@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Space, Typography, Row, Col, Statistic } from 'antd';
+import { Card, Button, Space, Typography, Row, Col } from 'antd';
 import { 
   EnvironmentOutlined, 
   InfoCircleOutlined, 
@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { QuarryPoint } from '../types/quarry';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 interface TestPanelProps {
   selectedQuarry: QuarryPoint | null;
