@@ -176,19 +176,89 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
           {
             balloonContentHeader: quarry.name,
             balloonContentBody: `
-              <div style="padding: 8px;">
-                <p><strong>Компания:</strong> ${quarry.company || 'Не указана'}</p>
-                <p><strong>Контакты:</strong> ${quarry.contact || 'Не указаны'}</p>
-                <p><strong>Материалы:</strong> ${quarry.materials.length} шт.</p>
+              <div style="
+                padding: 16px; 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                max-width: 280px;
+              ">
+                <div style="
+                  display: flex; 
+                  align-items: center; 
+                  gap: 8px; 
+                  margin-bottom: 16px;
+                  padding-bottom: 12px;
+                  border-bottom: 1px solid #f0f0f0;
+                ">
+                  <div style="
+                    width: 32px; 
+                    height: 32px; 
+                    background: linear-gradient(135deg, #1890ff, #40a9ff);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 16px;
+                  ">⛏️</div>
+                  <div>
+                    <div style="font-weight: 600; font-size: 16px; color: #262626;">${quarry.name}</div>
+                    <div style="font-size: 12px; color: #8c8c8c;">Карьер</div>
+                  </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Компания:</span>
+                    <span style="font-weight: 500; color: #262626; text-align: right; max-width: 150px;">${quarry.company || 'Не указана'}</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Контакты:</span>
+                    <span style="font-weight: 500; color: #262626; text-align: right; max-width: 150px;">${quarry.contact || 'Не указаны'}</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Материалы:</span>
+                    <span style="font-weight: 500; color: #262626;">${quarry.materials.length} шт.</span>
+                  </div>
+                </div>
+                
                 <button onclick="window.selectQuarry('${quarry.id}')" style="
-                  background: #1890ff; 
+                  background: linear-gradient(135deg, #1890ff, #40a9ff);
                   color: white; 
                   border: none; 
-                  padding: 8px 16px; 
-                  border-radius: 4px; 
+                  padding: 12px 20px; 
+                  border-radius: 8px; 
                   cursor: pointer;
-                ">
-                  Выбрать карьер
+                  font-weight: 500;
+                  font-size: 14px;
+                  width: 100%;
+                  transition: all 0.2s ease;
+                  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(24, 144, 255, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(24, 144, 255, 0.3)'">
+                  ⛏️ Выбрать карьер
                 </button>
               </div>
             `,
@@ -220,24 +290,112 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
             truck.coordinates,
             {
               balloonContentHeader: truck.name,
-              balloonContentBody: `
-                <div style="padding: 8px;">
-                  <p><strong>Тип:</strong> ${truck.type}</p>
-                  <p><strong>Грузоподъемность:</strong> ${truck.capacity} т</p>
-                  <p><strong>Расход топлива:</strong> ${truck.fuelConsumption} л/100км</p>
-                  <p><strong>Статус:</strong> <span style="color: #52c41a;">Доступен</span></p>
-                  <button onclick="window.selectTruck('${truck.id}')" style="
-                    background: #fa8c16; 
-                    color: white; 
-                    border: none; 
-                    padding: 8px 16px; 
-                    border-radius: 4px; 
-                    cursor: pointer;
-                  ">
-                    Выбрать грузовик
-                  </button>
+                          balloonContentBody: `
+              <div style="
+                padding: 16px; 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                max-width: 280px;
+              ">
+                <div style="
+                  display: flex; 
+                  align-items: center; 
+                  gap: 8px; 
+                  margin-bottom: 16px;
+                  padding-bottom: 12px;
+                  border-bottom: 1px solid #f0f0f0;
+                ">
+                  <div style="
+                    width: 32px; 
+                    height: 32px; 
+                    background: linear-gradient(135deg, #fa8c16, #ffa940);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 16px;
+                  ">🚛</div>
+                  <div>
+                    <div style="font-weight: 600; font-size: 16px; color: #262626;">${truck.name}</div>
+                    <div style="font-size: 12px; color: #8c8c8c;">Грузовой транспорт</div>
+                  </div>
                 </div>
-              `,
+                
+                <div style="margin-bottom: 16px;">
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Тип:</span>
+                    <span style="font-weight: 500; color: #262626;">${truck.type}</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Грузоподъемность:</span>
+                    <span style="font-weight: 500; color: #262626;">${truck.capacity} т</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Расход топлива:</span>
+                    <span style="font-weight: 500; color: #262626;">${truck.fuelConsumption} л/100км</span>
+                  </div>
+                </div>
+                
+                <div style="
+                  display: flex; 
+                  align-items: center; 
+                  gap: 6px; 
+                  margin-bottom: 16px;
+                  padding: 8px 12px;
+                  background: #f6ffed;
+                  border: 1px solid #b7eb8f;
+                  border-radius: 6px;
+                ">
+                  <div style="
+                    width: 8px; 
+                    height: 8px; 
+                    background: #52c41a; 
+                    border-radius: 50%;
+                  "></div>
+                  <span style="color: #389e0d; font-size: 13px; font-weight: 500;">Доступен для заказа</span>
+                </div>
+                
+                <button onclick="window.selectTruck('${truck.id}')" style="
+                  background: linear-gradient(135deg, #fa8c16, #ffa940);
+                  color: white; 
+                  border: none; 
+                  padding: 12px 20px; 
+                  border-radius: 8px; 
+                  cursor: pointer;
+                  font-weight: 500;
+                  font-size: 14px;
+                  width: 100%;
+                  transition: all 0.2s ease;
+                  box-shadow: 0 2px 8px rgba(250, 140, 22, 0.3);
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(250, 140, 22, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(250, 140, 22, 0.3)'">
+                  🚛 Выбрать грузовик
+                </button>
+              </div>
+            `,
               hintContent: `${truck.name} (${truck.capacity} т)`
             },
             {
@@ -261,28 +419,142 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
           {
             balloonContentHeader: delivery.name,
             balloonContentBody: `
-              <div style="padding: 8px;">
-                <p><strong>Адрес:</strong> ${delivery.address}</p>
-                <p><strong>Материал:</strong> ${delivery.material}</p>
-                <p><strong>Количество:</strong> ${delivery.quantity} т</p>
-                <p><strong>Срочность:</strong> 
-                  <span style="color: ${
-                    delivery.urgency === 'high' ? '#f5222d' : 
-                    delivery.urgency === 'medium' ? '#fa8c16' : '#52c41a'
-                  };">
-                    ${delivery.urgency === 'high' ? 'Высокая' : 
-                      delivery.urgency === 'medium' ? 'Средняя' : 'Низкая'}
-                  </span>
-                </p>
+              <div style="
+                padding: 16px; 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                max-width: 300px;
+              ">
+                <div style="
+                  display: flex; 
+                  align-items: center; 
+                  gap: 8px; 
+                  margin-bottom: 16px;
+                  padding-bottom: 12px;
+                  border-bottom: 1px solid #f0f0f0;
+                ">
+                  <div style="
+                    width: 32px; 
+                    height: 32px; 
+                    background: linear-gradient(135deg, ${
+                      delivery.urgency === 'high' ? '#f5222d, #ff4d4f' : 
+                      delivery.urgency === 'medium' ? '#fa8c16, #ffa940' : '#52c41a, #73d13d'
+                    });
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 16px;
+                  ">🏢</div>
+                  <div>
+                    <div style="font-weight: 600; font-size: 16px; color: #262626;">${delivery.name}</div>
+                    <div style="font-size: 12px; color: #8c8c8c;">Точка доставки</div>
+                  </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Адрес:</span>
+                    <span style="font-weight: 500; color: #262626; text-align: right; max-width: 150px;">${delivery.address}</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Материал:</span>
+                    <span style="font-weight: 500; color: #262626;">${delivery.material}</span>
+                  </div>
+                  
+                  <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    margin-bottom: 8px;
+                    padding: 8px 12px;
+                    background: #fafafa;
+                    border-radius: 6px;
+                  ">
+                    <span style="color: #595959; font-size: 13px;">Количество:</span>
+                    <span style="font-weight: 500; color: #262626;">${delivery.quantity} т</span>
+                  </div>
+                </div>
+                
+                <div style="
+                  display: flex; 
+                  align-items: center; 
+                  gap: 6px; 
+                  margin-bottom: 16px;
+                  padding: 8px 12px;
+                  background: ${
+                    delivery.urgency === 'high' ? '#fff2f0' : 
+                    delivery.urgency === 'medium' ? '#fff7e6' : '#f6ffed'
+                  };
+                  border: 1px solid ${
+                    delivery.urgency === 'high' ? '#ffccc7' : 
+                    delivery.urgency === 'medium' ? '#ffd591' : '#b7eb8f'
+                  };
+                  border-radius: 6px;
+                ">
+                  <div style="
+                    width: 8px; 
+                    height: 8px; 
+                    background: ${
+                      delivery.urgency === 'high' ? '#f5222d' : 
+                      delivery.urgency === 'medium' ? '#fa8c16' : '#52c41a'
+                    }; 
+                    border-radius: 50%;
+                  "></div>
+                  <span style="
+                    color: ${
+                      delivery.urgency === 'high' ? '#a8071a' : 
+                      delivery.urgency === 'medium' ? '#ad6800' : '#389e0d'
+                    }; 
+                    font-size: 13px; 
+                    font-weight: 500;
+                  ">Срочность: ${
+                    delivery.urgency === 'high' ? 'Высокая' : 
+                    delivery.urgency === 'medium' ? 'Средняя' : 'Низкая'
+                  }</span>
+                </div>
+                
                 <button onclick="window.selectDelivery('${delivery.id}')" style="
-                  background: #f5222d; 
+                  background: linear-gradient(135deg, ${
+                    delivery.urgency === 'high' ? '#f5222d, #ff4d4f' : 
+                    delivery.urgency === 'medium' ? '#fa8c16, #ffa940' : '#52c41a, #73d13d'
+                  });
                   color: white; 
                   border: none; 
-                  padding: 8px 16px; 
-                  border-radius: 4px; 
+                  padding: 12px 20px; 
+                  border-radius: 8px; 
                   cursor: pointer;
-                ">
-                  Выбрать точку доставки
+                  font-weight: 500;
+                  font-size: 14px;
+                  width: 100%;
+                  transition: all 0.2s ease;
+                  box-shadow: 0 2px 8px rgba(${
+                    delivery.urgency === 'high' ? '245, 34, 45' : 
+                    delivery.urgency === 'medium' ? '250, 140, 22' : '82, 196, 26'
+                  }, 0.3);
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(${
+                  delivery.urgency === 'high' ? '245, 34, 45' : 
+                  delivery.urgency === 'medium' ? '250, 140, 22' : '#52c41a'
+                }, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(${
+                  delivery.urgency === 'high' ? '245, 34, 45' : 
+                  delivery.urgency === 'medium' ? '250, 140, 22' : '82, 196, 26'
+                }, 0.3)'">
+                  🏢 Выбрать точку доставки
                 </button>
               </div>
             `,
