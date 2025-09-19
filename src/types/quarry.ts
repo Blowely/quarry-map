@@ -18,6 +18,7 @@ export interface QuarryPoint {
   coordinates: [number, number];
   transport?: string;
   schedule?: string;
+  hasTariff?: boolean;
 }
 
 export interface Material {
