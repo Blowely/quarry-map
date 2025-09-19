@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, Row, Col, Button, Space, Typography, Statistic, Alert, Divider, message } from 'antd';
 import { 
   CalculatorOutlined, 
   FileTextOutlined, 
   TruckOutlined,
-  EnvironmentOutlined,
-  ShopOutlined,
   CheckCircleOutlined
 } from '@ant-design/icons';
 import { QuarryPoint, DeliveryPoint } from '../types/quarry';

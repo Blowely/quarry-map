@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Row, Col, Button, Space, Typography, Alert } from 'antd';
 import { EnvironmentOutlined, ShopOutlined, TruckOutlined } from '@ant-design/icons';
 import { DeliveryPoint } from '../types/quarry';

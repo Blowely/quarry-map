@@ -605,7 +605,7 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
       console.error('QuarryMap: Ошибка создания меток:', err);
       setError('Ошибка отображения меток на карте');
     }
-  }, [map, quarries, onQuarrySelect]);
+  }, [map, quarries, onQuarrySelect, onTruckSelect, onDeliverySelect, selectedQuarry?.id]);
 
   // useEffect для обновления внешнего вида меток при изменении selectedQuarry
   useEffect(() => {
@@ -623,7 +623,7 @@ const QuarryMap: React.FC<QuarryMapProps> = ({ quarries, selectedQuarry, onQuarr
         });
       }
     });
-  }, [selectedQuarry?.id, placemarks, quarries, map]);
+  }, [selectedQuarry?.id, selectedQuarry?.name, placemarks, quarries, map]);
 
   if (error) {
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, Form, Select, InputNumber, Row, Col, Space, Typography, Alert, Divider } from 'antd';
+import { Card, Form, Select, InputNumber, Row, Col, Typography, Alert, Divider } from 'antd';
 import { ShoppingOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { QuarryPoint } from '../types/quarry';
 

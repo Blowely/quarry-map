@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Typography, Row, Col, Card, Space, Button } from 'antd';
-import { EnvironmentOutlined, ShoppingOutlined, CarOutlined, ReloadOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined, ShoppingOutlined, ReloadOutlined } from '@ant-design/icons';
 import './App.css';
 
 import StepWizard from './components/StepWizard';
